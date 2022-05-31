@@ -62,20 +62,28 @@ class GridController extends \yii\web\Controller
 
         $dataList = Supplier::find()->select($columns)->andFilterWhere(['in', 'id', $selectedIdsArr])->asArray()->all();
 
+        $columnsCount = count($selectedIdsArr);
+
         foreach ($dataList as $key => $value) {
-            var_dump($value);
+            // var_dump($value);
             $index = $key + 2;
 
             $sheet->setCellValue("A${index}", $value['id']);
 
-            if (isset($value['name'])){
-                $sheet->setCellValue("B${index}", $value['name']);
-            }
-            if (isset($value['code'])){
-                $sheet->setCellValue("B${index}", $value['code']);
-            }
-            if (isset($value['t_status'])){
-                $sheet->setCellValue("B${index}", $value['t_status']);
+            $x = 2;
+            while ($x<$columnsCount){
+                $cell = $sheet->getCell([$x, 1]);
+                $column = $cell->getColumn();
+                if ($cell->getValue() == '名称'){
+                    $sheet->setCellValue("$column${index}", $value['name']);
+                }
+                if ($cell->getValue() == 'code'){
+                    $sheet->setCellValue("$column${index}", $value['code']);
+                }
+                if ($cell->getValue() == 't_status'){
+                    $sheet->setCellValue("$column${index}", $value['t_status']);
+                }
+                $x++;
             }
         }
 
